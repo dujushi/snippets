@@ -1,0 +1,11 @@
+        $('#Category').change(function () {
+            var checkbox = $('#IsComplete');
+            var categoryArray = ["0", "1", "2"];
+            if ($.inArray($(this).val(), categoryArray) > -1) {
+                checkbox.prop("checked", false);
+                checkbox.parent().show();
+            } else {
+                checkbox.prop("checked", true);
+                checkbox.parent().hide();
+            }
+        });
