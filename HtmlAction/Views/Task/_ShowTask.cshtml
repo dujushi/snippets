@@ -1,0 +1,18 @@
+﻿@model IEnumerable<HtmlAction.Models.Task>
+
+<div id="task_container">
+    @foreach (var item in Model)
+    {
+        <div data-id="@item.Id" class="task_item">
+            <span>
+            @item.Content
+        </span>
+            <a href="#" class="switch@(item.Status ? " complete" : "")" title="Complete">&#10004</a>
+        </div>
+    }
+
+    @if (ViewBag.ShowMoreButton)
+    {
+        <a href="#" id="show_more">Show More</a>
+    }
+</div>
