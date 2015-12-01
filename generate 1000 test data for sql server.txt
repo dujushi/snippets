@@ -1,0 +1,12 @@
+# server name for localDB 
+# with VS 2015: (localdb)\MSSQLLocalDB
+# with VS 2012: (localdb)\v11.0
+
+declare @total int = 1000;
+declare @cnt int = 0;
+
+while @cnt < @total
+begin
+	insert into Tasks (Content, Status) values ('test', 1);
+	set @cnt = @cnt + 1;
+end;
