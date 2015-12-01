@@ -1,0 +1,108 @@
+﻿@model HtmlAction.Models.Pagination
+
+
+@{
+    bool showPrevious = Model.CurrentPage > 1;
+    bool showNext = Model.CurrentPage < Model.TotalPages;
+    bool showAll = Model.TotalPages <= 11;
+    int gapSize = 5;
+    bool showFirstGap = Model.CurrentPage - 1 >= gapSize;
+    bool showSecondGap = Model.TotalPages - Model.CurrentPage >= gapSize;
+}
+
+@if (Model.TotalPages > 1)
+{
+    <div class="paginate">
+        <ul>
+            @if (showPrevious)
+            {
+                <li>
+                    <a href="@Model.PageUrl(Model.CurrentPage - 1)">Previous</a>
+                </li>
+            }
+
+            @if (showAll)
+            {
+                for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li>
+                        <a href="@Model.PageUrl(i)" class="@(Model.CurrentPage == i ? "active" : "")">@i</a>
+                    </li>
+                }
+            }
+            else
+            {
+                if (showFirstGap && showSecondGap)
+                {
+                    for (int i = 1; i <= 2; i++)
+                    {
+                        <li>
+                            <a href="@Model.PageUrl(i)">@i</a>
+                        </li>
+                    }
+                    <li>
+                        <a href="#" class="gap">&hellip;</a>
+                    </li>
+                    for (int i = Model.CurrentPage - 1; i <= Model.CurrentPage + 1; i++)
+                    {
+                        <li>
+                            <a href="@Model.PageUrl(i)" @(Model.CurrentPage == i ? "class=active" : "")>@i</a>
+                        </li>
+                    }
+                    <li>
+                        <a href="#" class="gap">&hellip;</a>
+                    </li>
+                    for (int i = Model.TotalPages - 1; i <= Model.TotalPages; i++)
+                    {
+                        <li>
+                            <a href="@Model.PageUrl(i)">@i</a>
+                        </li>
+                    }
+                }
+                else if (!showFirstGap)
+                {
+                    for (int i = 1; i <= gapSize + 1; i++)
+                    {
+                        <li>
+                            <a href="@Model.PageUrl(i)" @(Model.CurrentPage == i ? "class=active" : "")>@i</a>
+                        </li>
+                    }
+                    <li>
+                        <a href="#" class="gap">&hellip;</a>
+                    </li>
+                    for (int i = Model.TotalPages - 1; i <= Model.TotalPages; i++)
+                    {
+                        <li>
+                            <a href="@Model.PageUrl(i)">@i</a>
+                        </li>
+                    }
+                }
+                else
+                {
+                    for (int i = 1; i <= 2; i++)
+                    {
+                        <li>
+                            <a href="@Model.PageUrl(i)">@i</a>
+                        </li>
+                    }
+                    <li>
+                        <a href="#" class="gap">&hellip;</a>
+                    </li>
+                    for (int i = Model.TotalPages - gapSize; i <= Model.TotalPages; i++)
+                    {
+                        <li>
+                            <a href="@Model.PageUrl(i)" @(Model.CurrentPage == i ? "class=active" : "")>@i</a>
+                        </li>
+                    }
+                }
+            }
+
+            @if (showNext)
+            {
+                <li>
+                    <a href="@Model.PageUrl(Model.CurrentPage + 1)">Next</a>
+                </li>
+            }
+        </ul>
+    </div>
+}
