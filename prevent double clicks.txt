@@ -1,0 +1,19 @@
+        $(".ux-prevent-double-click").click(function (e) {
+            var disabledClass = 'disabled-button';
+            var button = $(this);
+            if (!button.hasClass(disabledClass)) {
+
+                var confirmMessage = button.data('confirm');
+                if (confirmMessage != undefined && !confirm(confirmMessage)) {
+                    e.preventDefault();
+                    return;
+                }
+
+                button.append(' <i class="fa fa-spinner fa-pulse"></i>');
+                button.addClass(disabledClass);
+            } else {
+                e.preventDefault();
+            }
+        });
+		
+		<button type="submit" class="button ux-prevent-double-click" data-confirm="Do it?">Run</button>
