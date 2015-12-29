@@ -1,0 +1,22 @@
+{
+  "name": "gulp-minification",
+  "description": "Front end automation with gulp",
+  "main": "index.js",
+  "authors": [
+    "Peikai Guo"
+  ],
+  "license": "MIT",
+  "moduleType": [],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "react": "~0.14.3"
+  }
+}
