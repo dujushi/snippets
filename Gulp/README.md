@@ -9,23 +9,23 @@
 ## How to
 1. Install [Node.js](https://nodejs.org/en/)
 2. Download this project, cd the directory 
-2. Install all dependencies
-```
-npm install
-```
-3. Install bower components
-```
-./node_modules/.bin/bower install
-```
-4. Run Gulp
+3. Install all dependencies
+	```
+	npm install
+	```
+4. Install bower components
+	```
+	./node_modules/.bin/bower install
+	```
+5. Run Gulp
 	- Development
-	```
-	./node_modules/.bin/gulp
-	```
+		```
+		./node_modules/.bin/gulp
+		```
 	- Production
-	```
-	./node_modules/.bin/gulp --production
-	```
+		```
+		./node_modules/.bin/gulp --production
+		```
 
 ## Features
 1. sass
