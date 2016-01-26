@@ -1,0 +1,27 @@
+Test Name:	InClauseMaxValuesWithEntityFramework
+Test Outcome:	Failed
+Result Message:	
+Test method UnitTest.Demo.InClauseMaxValuesWithEntityFramework threw exception: 
+System.Data.Entity.Core.EntityCommandExecutionException: An error occurred while executing the command definition. See the inner exception for details. ---> System.Data.SqlClient.SqlException: Timeout expired.  The timeout period elapsed prior to completion of the operation or the server is not responding. ---> System.ComponentModel.Win32Exception: The wait operation timed out
+Result StandardOutput:	
+Guid count: 10000, sql length: 662035, result: 0
+Guid count: 11000, sql length: 726388, result: 0
+Guid count: 12000, sql length: 792389, result: 0
+Guid count: 13000, sql length: 858389, result: 0
+Guid count: 14000, sql length: 924389, result: 0
+Guid count: 15000, sql length: 990389, result: 0
+
+Test Name:	InClauseMaxValuesWithRawQuery
+Test Outcome:	Failed
+Result Message:	
+Test method UnitTest.Demo.InClauseMaxValuesWithRawQuery threw exception: 
+System.Data.SqlClient.SqlException: Timeout expired.  The timeout period elapsed prior to completion of the operation or the server is not responding. ---> System.ComponentModel.Win32Exception: The wait operation timed out
+Result StandardOutput:	
+Guid count: 10000, sql length: 390045, result: 0
+Guid count: 11000, sql length: 429045, result: 0
+Guid count: 12000, sql length: 468045, result: 0
+Guid count: 13000, sql length: 507045, result: 0
+Guid count: 14000, sql length: 546045, result: 0
+Guid count: 15000, sql length: 585045, result: 0
+Guid count: 16000, sql length: 624045, result: 0
+
