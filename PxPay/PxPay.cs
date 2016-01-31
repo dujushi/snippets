@@ -85,7 +85,7 @@ namespace Demo.Services
                 {"UrlFail", UrlFail}
             };
 
-            var xml = await sendRequest("GenerateRequest", data);
+            var xml = await SendRequest("GenerateRequest", data);
 
             if (xml.Element("URI") == null)
             {
@@ -150,7 +150,7 @@ namespace Demo.Services
                 {"Response", response}
             };
 
-            var xml = await sendRequest("ProcessResponse", data);
+            var xml = await SendRequest("ProcessResponse", data);
             if (xml.Attribute("valid").Value != "1")
             {
                 Trace.TraceError($"ProcessResponse Invalid. Response: {xml}");
@@ -160,7 +160,7 @@ namespace Demo.Services
             return (Response)serializer.Deserialize(xml.CreateReader());
         }
 
-        private async Task<XElement> sendRequest(string type, Dictionary<string, string> data)
+        private async Task<XElement> SendRequest(string type, Dictionary<string, string> data)
         {
             XElement responseXml = null;
 
@@ -217,4 +217,3 @@ namespace Demo.Services
         }
     }
 }
- 
