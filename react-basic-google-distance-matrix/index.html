@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Travel Plan</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCO9pWIxbEw1Q9M4hBtBIjHXJDqGrr0cBc&libraries=places"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css" />
+    <style>
+      h1 {
+        text-align: center;
+      }
+      .PlaceList {
+        text-align: center;
+      }
+      .DistanceMatrix span, .DistanceMatrix i{
+        vertical-align: middle;
+      }
+      .ToNextStop {
+        font-size: 50px;
+      }
+      input {
+        width: 100%;
+        font-size: 20px;
+      }
+      .Error {
+        color: red;
+      }
+      ul {
+        width: 100%;
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        border: 1px solid #ddd;
+        border-top: none
+      }
+      ul li {
+          padding: 8px 0px;
+          border-bottom: 1px solid #ddd;
+          cursor: pointer;
+      }
+      ul li:hover {
+          background-color: red;
+      }
+      ul li:last-child {
+          border-bottom: none
+      }
+      .PoweredBy {
+        margin-top: 5px;
+        text-align: right;
+      }
+    </style>
+  </head>
+  <body>
+    <div id='content'></div>
+    <div class='PoweredBy'><i class='fa fa-google'></i> Powered by Google</div>
+    <script type='text/babel'>
+      var PlaceBox = React.createClass({
+        getInitialState: function() {
+          return {places: []};
+        },
+        render: function() {
+          return (
+            <div className='PlaceBox'>
+              <h1>Travel Plan</h1>
+              <PlaceList places={this.state.places}/>
+              <PlaceForm onPlaceSelect={this.handlePlaceSelect}/>
+            </div>
+          );
+        },
+        handlePlaceSelect: function(place) {
+          var places = this.state.places;
+          // check if place_id already exists
+          var found = places.find(function(element, index, array) {
+            return element.place_id == place.place_id;
+          });
+          if (found === undefined) {
+            // calculate distance and duration from last stop
+            if (places.length > 0) {
+              var lastPlace = places[places.length - 1];
+              lastPlace.distance = 'Calculating';
+              lastPlace.duration = 'Calculating';
+              places[places.length - 1] = lastPlace;
+
+              this.calculateDistanceMatrix(lastPlace, place);
+            }
+            places.push(place);
+            this.setState({places: places});
+          }
+        },
+        calculateDistanceMatrix: function(originPlace, destinationPlace) {
+          var service = new google.maps.DistanceMatrixService;
+          service.getDistanceMatrix({
+            origins: [originPlace.description],
+            destinations: [destinationPlace.description],
+            travelMode: google.maps.TravelMode.DRIVING,
+            unitSystem: google.maps.UnitSystem.METRIC,
+            avoidHighways: false,
+            avoidTolls: false
+          }, function(response, status) {
+            if (status !== google.maps.DistanceMatrixStatus.OK) {
+              alert('Error! DistanceMatrixStatus: ' + status);
+            } else {
+              var results = response.rows[0].elements;
+              var status = results[0].status;
+              if (status == google.maps.DistanceMatrixElementStatus.OK) {
+                originPlace.distance = results[0].distance.text;
+                originPlace.duration = results[0].duration.text;
+              } else {
+                originPlace.distance = status;
+                originPlace.duration = status;
+              }
+              var places = this.state.places;
+              // find the right place to update distance and duration
+              var found = places.find(function(element, index, array) {
+                return element.place_id == originPlace.place_id;
+              });
+              if (found != undefined) {
+                places[found] = originPlace;
+                this.setState({places: places});
+              }
+            }
+          }.bind(this));
+        }
+      });
+
+      var PlaceList = React.createClass({
+        render: function() {
+          var placeNodes = this.props.places.map(function(place) {
+            return (
+              <Place key={place.place_id} {...place} />
+            );
+          });
+          return (
+            <div className='PlaceList'>
+              {placeNodes}
+            </div>
+          );
+        }
+      });
+
+      var Place = React.createClass({
+        render: function() {
+          var distanceMatrixNode = '';
+          var isCalculating = this.props.distance == 'Calculating';
+          if (this.props.distance != "") {
+            distanceMatrixNode = (
+              <div className='DistanceMatrix'>
+                <span>{!isCalculating ? this.props.distance : <i className='fa fa-spinner fa-spin'></i>}</span>
+                <i className='fa fa-long-arrow-down ToNextStop'></i>
+                <span>{!isCalculating ? this.props.duration : <i className='fa fa-spinner fa-spin'></i>}</span>
+              </div>
+            );
+          }
+          return (
+            <div className='Place'>
+              <h2 className='Stop'>
+                <i className='fa fa-car'></i>
+                <span>{this.props.description}</span>
+              </h2>
+              {distanceMatrixNode}
+            </div>
+          );
+        }
+      });
+
+      var PlaceForm = React.createClass({
+        defaultState: {keywords: '', predictions: [], error: ''},
+        getInitialState: function() {
+          return this.defaultState;
+        },
+        render: function() {
+          var predictionNodes = this.state.predictions.map(function(prediction) {
+            return (
+              <li key={prediction.place_id}
+                  onClick={this.handlePlaceSelect.bind(this, prediction.place_id, prediction.description)}
+                  >
+                {prediction.description}
+              </li>
+            );
+          }.bind(this));
+          return (
+            <div>
+              <input value={this.state.keywords} onChange={this.handleKeywordsChange} placeholder='Enter your next stop' />
+              {this.state.error != "" ? <div className='Error'>{this.state.error}</div> : null}
+              {this.state.predictions.length == 0 ? null : <ul>{predictionNodes}</ul>}
+            </div>
+          );
+        },
+        handleKeywordsChange: function(e) {
+          var keywords = e.target.value;
+          this.setState({keywords: keywords});
+
+          // no query if keywords has fewer than 5 characters
+          if (keywords.length < 5) {
+            this.setState({predictions: []});
+          } else {
+            var service = new google.maps.places.AutocompleteService();
+            service.getQueryPredictions({input: keywords}, function(predictions, status) {
+              // result may come back in different order.
+              // only show results for current keywords.
+              if (keywords != this.state.keywords) return;
+
+              switch (status) {
+                case google.maps.places.PlacesServiceStatus.OK:
+                  this.setState({predictions: predictions});
+                  break;
+                case google.maps.places.PlacesServiceStatus.ZERO_RESULTS:
+                  this.setState({predictions: []});
+                  break;
+                default:
+                  this.setState({error: status, predictions: []});
+                  break;
+              }
+            }.bind(this));
+          }
+        },
+        handlePlaceSelect: function(place_id, description, e) {
+          this.setState(this.defaultState);
+          this.props.onPlaceSelect({place_id: place_id, description: description, duration: '', distance: ''});
+        }
+      });
+
+      ReactDOM.render(
+        <PlaceBox />,
+        document.getElementById('content')
+      );
+    </script>
+  </body>
+</html>
