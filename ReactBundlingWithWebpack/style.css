@@ -1,0 +1,42 @@
+h1 {
+  text-align: center;
+}
+.PlaceList {
+  text-align: center;
+}
+.DistanceMatrix span, .DistanceMatrix i{
+  vertical-align: middle;
+}
+.ToNextStop {
+  font-size: 50px;
+}
+input {
+  width: 100%;
+  font-size: 20px;
+}
+.Error {
+  color: red;
+}
+ul {
+  width: 100%;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #ddd;
+  border-top: none
+}
+ul li {
+    padding: 8px 0px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+}
+ul li:hover {
+    background-color: red;
+}
+ul li:last-child {
+    border-bottom: none
+}
+.PoweredBy {
+  margin-top: 5px;
+  text-align: right;
+}
